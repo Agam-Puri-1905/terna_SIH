@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIH 2026 — Remote Controller</title>
+<style>
+:root {
+  --bg-deep: #030712;
+  --bg-surface: #0B172A;
+  --blue-bright: #3B82F6;
+  --blue-cyan: #00F0FF;
+  --orange-bright: #FF9E2C;
+  --orange-sih: #FF7A00;
+  --text-white: #FFFFFF;
+  --text-muted: #CBD5E1;
+  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 100vw; min-height: 100vh;
+  background-color: var(--bg-deep);
+  background-image: radial-gradient(circle at 50% 30%, rgba(11,23,42,0.98) 0%, #030712 100%);
+  color: var(--text-white);
+  font-family: var(--font-main);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 1.5rem 1rem; text-align: center; overflow-x: hidden;
+}
+
+header {
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem; margin-top: 0.5rem;
+}
+
+.brand-badge {
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.2em;
+  color: var(--blue-cyan); text-transform: uppercase;
+  background: rgba(37,99,235,0.15); border: 1px solid rgba(59,130,246,0.3);
+  padding: 0.3rem 0.8rem; border-radius: 4px;
+}
+
+h1 {
+  font-size: 1.6rem; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--orange-bright) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.sub {
+  font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+main {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem; my: auto;
+}
+
+.launch-btn {
+  width: 100%; height: 160px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255,122,0,0.2) 0%, rgba(255,158,44,0.35) 100%);
+  border: 2px solid var(--orange-sih);
+  color: var(--text-white);
+  font-family: var(--font-main);
+  font-size: 1.5rem; font-weight: 900; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem;
+  box-shadow: 0 0 40px rgba(255,122,0,0.3), inset 0 0 20px rgba(255,122,0,0.2);
+  cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+
+.launch-btn:active {
+  transform: scale(0.96);
+  background: linear-gradient(135deg, rgba(255,122,0,0.4) 0%, rgba(255,158,44,0.6) 100%);
+  box-shadow: 0 0 60px rgba(255,122,0,0.6);
+}
+
+.launch-btn-icon {
+  font-size: 2.2rem;
+}
+
+.launch-btn-sub {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--orange-bright); letter-spacing: 0.2em;
+}
+
+.controls-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; width: 100%;
+}
+
+.ctrl-btn {
+  padding: 1rem 0.8rem; border-radius: 10px;
+  background: rgba(11,23,42,0.8); border: 1px solid rgba(59,130,246,0.3);
+  color: var(--text-white); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ctrl-btn:active { background: rgba(59,130,246,0.3); border-color: var(--blue-cyan); }
+.ctrl-btn.restart { grid-column: span 2; border-color: rgba(255,122,0,0.4); color: var(--orange-bright); }
+
+.status-bar {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--blue-cyan);
+  padding: 0.5rem 1rem; background: rgba(3,7,18,0.8); border-radius: 20px;
+  border: 1px solid rgba(0,240,255,0.2); width: 100%; max-width: 400px;
+}
+
+footer {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-badge">SIH 2026 // MOBILE REMOTE</div>
+  <h1>TERNA ENGG COLLEGE</h1>
+  <div class="sub">Managed by Intellecta</div>
+</header>
+
+<main>
+  <button class="launch-btn" id="btn-launch" onclick="sendTrigger('launch')">
+    <span class="launch-btn-icon">🚀</span>
+    <span>PRESS ENTER</span>
+    <span class="launch-btn-sub">[ LAUNCH INAUGURATION ]</span>
+  </button>
+
+  <div class="controls-grid">
+    <button class="ctrl-btn" onclick="sendTrigger('prev')">← PREV SLIDE</button>
+    <button class="ctrl-btn" onclick="sendTrigger('next')">NEXT SLIDE →</button>
+    <button class="ctrl-btn restart" onclick="sendTrigger('restart')">↺ RESTART SLIDESHOW</button>
+  </div>
+
+  <div class="status-bar" id="status-text">
+    READY // TAP BUTTON TO TRIGGER
+  </div>
+</main>
+
+<footer>
+  WEBHOOK TOPIC: <span id="topic-display" style="color:var(--orange-bright);">sih2026_terna_inauguration_trigger_x99</span>
+</footer>
+
+<script>
+  var TOPIC = 'sih2026_terna_inauguration_trigger_x99';
+  var statusEl = document.getElementById('status-text');
+
+  function sendTrigger(action) {
+    statusEl.innerText = 'SENDING SIGNAL [' + action.toUpperCase() + ']...';
+    statusEl.style.color = '#FF9E2C';
+
+    fetch('https://ntfy.sh/' + TOPIC, {
+      method: 'POST',
+      body: action,
+      headers: { 'Content-Type': 'text/plain' }
+    })
+    .then(function(res) {
+      if (res.ok) {
+        statusEl.innerText = 'SUCCESS // SIGNAL SENT: ' + action.toUpperCase();
+        statusEl.style.color = '#00F0FF';
+        if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+      } else {
+        throw new Error('Server response HTTP ' + res.status);
+      }
+    })
+    .catch(function(err) {
+      statusEl.innerText = 'ERROR: ' + err.message;
+      statusEl.style.color = '#FF4444';
+    });
+  }
+</script>
+
+</body>
+</html>

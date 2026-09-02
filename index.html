@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart India Hackathon 2026 — Inauguration Experience</title>
+  <meta name="description"
+    content="Official Inauguration Presentation — Smart India Hackathon 2026, Terna Engineering College, Navi Mumbai. Managed by Intellecta.">
+  <style>
+    /* ============================================================
+   PROJECTOR-OPTIMIZED AUDITORIUM INAUGURATION SYSTEM
+   ============================================================ */
+    :root {
+      --bg-deep: #030712;
+      --bg-mid: #07101E;
+      --bg-surface: #0B172A;
+      --blue-primary: #2563EB;
+      --blue-bright: #3B82F6;
+      --blue-cyan: #00F0FF;
+      --orange-sih: #FF7A00;
+      --orange-bright: #FF9E2C;
+      --green-india: #1B8F35;
+      --green-bright: #22C55E;
+      --text-white: #FFFFFF;
+      --text-muted: #CBD5E1;
+      --text-dim: #64748B;
+      --tricolour-saffron: #FF9933;
+      --tricolour-white: #FFFFFF;
+      --tricolour-green: #138808;
+      --font-main: 'Segoe UI', Arial, Helvetica, system-ui, -apple-system, sans-serif;
+      --font-mono: 'Consolas', 'Courier New', monospace;
+      --ease-tactical: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(circle at 50% 40%, rgba(11, 23, 42, 0.95) 0%, transparent 75%),
+        radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 15% 90%, rgba(255, 122, 0, 0.08) 0%, transparent 45%);
+      color: var(--text-white);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      cursor: default;
+    }
+
+    body.cursor-hidden {
+      cursor: none;
+    }
+
+    /* Canvas Background */
+    #canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* HUD Overlay */
+    .hud-frame-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 5;
+      pointer-events: none;
+      box-shadow: inset 0 0 100px rgba(3, 7, 18, 0.85);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    .hud-corner {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: clamp(0.65rem, 0.9vw, 0.9rem);
+      letter-spacing: 0.22em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hud-corner::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--blue-cyan);
+      box-shadow: 0 0 10px var(--blue-cyan);
+    }
+
+    .hud-corner.top-left {
+      top: 1rem;
+      left: 1.5rem;
+    }
+
+    .hud-corner.top-right {
+      top: 1rem;
+      right: 1.5rem;
+    }
+
+    .hud-corner.bottom-left {
+      bottom: 1rem;
+      left: 1.5rem;
+    }
+
+    .hud-corner.bottom-right {
+      bottom: 1rem;
+      right: 1.5rem;
+    }
+
+    .hud-line-top {
+      position: absolute;
+      top: 2.2rem;
+      left: 5vw;
+      right: 5vw;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3) 20%, rgba(59, 130, 246, 0.3) 80%, transparent);
+    }
+
+    .hud-line-bottom {
+      position: absolute;
+      bottom: 2.2rem;
+      left: 5vw;
+      right: 5vw;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3) 20%, rgba(59, 130, 246, 0.3) 80%, transparent);
+    }
+
+    /* Scene Architecture */
+    .scene {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s var(--ease-tactical), visibility 0.5s;
+      padding: clamp(2.5rem, 4.5vh, 3.5rem) clamp(2rem, 4vw, 4rem);
+    }
+
+    .scene.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ============================================================
+   LOGO BADGE CONTAINERS
+   ============================================================ */
+    .logo-badge-light {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 8px;
+      padding: 0.5rem 1.2rem;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2), 0 6px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .logo-badge-light .logo-img {
+      max-height: 70px;
+      max-width: 100%;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-badge-light.intellecta {
+      padding: 0.5rem 1.4rem;
+    }
+
+    .logo-img {
+      display: block;
+      object-fit: contain;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .logo-img[data-failed="true"] {
+      display: none !important;
+    }
+
+    /* Tricolour Beam */
+    .tricolour-beam {
+      width: min(75vw, 650px);
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg,
+          var(--tricolour-saffron) 0%, var(--tricolour-saffron) 33%,
+          var(--tricolour-white) 33%, var(--tricolour-white) 66%,
+          var(--tricolour-green) 66%, var(--tricolour-green) 100%);
+      margin: 0.8rem auto;
+      box-shadow: 0 0 20px rgba(255, 153, 51, 0.4);
+    }
+
+    /* Tactical Badge */
+    .tactical-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1.1rem;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      font-family: var(--font-mono);
+      font-size: clamp(0.7rem, 1vw, 0.95rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue-cyan);
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+
+    .tactical-badge.orange {
+      background: rgba(255, 122, 0, 0.15);
+      border-color: rgba(255, 122, 0, 0.5);
+      color: var(--orange-bright);
+    }
+
+    .tactical-badge.green {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.5);
+      color: var(--green-bright);
+    }
+
+    /* ============================================================
+   SCENE 0 — PRE-LAUNCH
+   ============================================================ */
+    #scene-0 {
+      justify-content: space-between;
+    }
+
+    #scene-0 .prelaunch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1400px;
+    }
+
+    #scene-0 .prelaunch-header .terna-badge .logo-img {
+      height: clamp(45px, 7vh, 70px);
+    }
+
+    #scene-0 .prelaunch-header .college-title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #scene-0 .prelaunch-header .college-main-name {
+      font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    #scene-0 .prelaunch-header .college-sub-name {
+      font-family: var(--font-mono);
+      font-size: clamp(0.7rem, 1vw, 1rem);
+      letter-spacing: 0.25em;
+      color: var(--blue-cyan);
+    }
+
+    #scene-0 .prelaunch-header .iic-badge .logo-img {
+      height: clamp(40px, 6vh, 65px);
+    }
+
+    #scene-0 .hero-center-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #scene-0 .sih-hero-logo {
+      height: clamp(80px, 13vh, 140px);
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 35px rgba(255, 122, 0, 0.5));
+    }
+
+    #scene-0 .sih-hero-title {
+      font-size: clamp(2.8rem, 6.5vw, 6.5rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 0.95;
+      text-transform: uppercase;
+      text-align: center;
+      text-shadow: 0 0 60px rgba(59, 130, 246, 0.35);
+    }
+
+    #scene-0 .sih-hero-year {
+      font-size: clamp(3.2rem, 7.5vw, 7.5rem);
+      font-weight: 900;
+      color: var(--orange-sih);
+      letter-spacing: 0.06em;
+      line-height: 0.95;
+      text-shadow: 0 0 50px rgba(255, 122, 0, 0.5);
+    }
+
+    #scene-0 .internal-strip {
+      margin-top: 0.4rem;
+      padding: 0.35rem 2rem;
+      background: rgba(37, 99, 235, 0.15);
+      border-top: 1px solid rgba(59, 130, 246, 0.4);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.4);
+      font-size: clamp(0.85rem, 1.3vw, 1.3rem);
+      font-weight: 800;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    #scene-0 .prelaunch-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #scene-0 .intellecta-footer-badge {
+      padding: 0.4rem 1.2rem;
+    }
+
+    #scene-0 .intellecta-footer-badge .logo-img {
+      width: clamp(180px, 18vw, 280px);
+      height: auto;
+      max-height: none;
+    }
+
+    #scene-0 .prompt-enter-box {
+      padding: 0.55rem 2rem;
+      background: rgba(255, 122, 0, 0.15);
+      border: 1.5px solid rgba(255, 122, 0, 0.6);
+      font-family: var(--font-mono);
+      font-size: clamp(0.75rem, 1vw, 1rem);
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      color: var(--orange-bright);
+      text-transform: uppercase;
+      clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+      animation: prompt-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes prompt-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 15px rgba(255, 122, 0, 0.3);
+        opacity: 0.85;
+      }
+
+      50% {
+        box-shadow: 0 0 35px rgba(255, 122, 0, 0.7);
+        opacity: 1;
+      }
+    }
+
+    /* ============================================================
+   SCENE 1 — SYSTEM ACTIVATION
+   ============================================================ */
+    #scene-1 .activation-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    #scene-1 .activation-status-label {
+      font-family: var(--font-mono);
+      font-size: clamp(1.2rem, 2.2vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: var(--blue-cyan);
+      text-transform: uppercase;
+      animation: blink 0.35s ease-in-out infinite alternate;
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0.3;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    #scene-1 .activation-target-ring {
+      width: 140px;
+      height: 140px;
+      border: 2px dashed var(--blue-bright);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0);
+      transition: transform 1.2s var(--ease-tactical);
+    }
+
+    #scene-1 .activation-target-ring.active {
+      transform: scale(1.6);
+      border-color: var(--orange-sih);
+    }
+
+    #scene-1 .activation-core-dot {
+      width: 20px;
+      height: 20px;
+      background: var(--orange-bright);
+      border-radius: 50%;
+      box-shadow: 0 0 40px var(--orange-bright), 0 0 100px var(--orange-sih);
+    }
+
+    /* ============================================================
+   SCENE 2 — COUNTDOWN
+   ============================================================ */
+    #scene-2 .countdown-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #scene-2 .countdown-num {
+      font-size: clamp(14rem, 30vw, 26rem);
+      font-weight: 900;
+      color: var(--text-white);
+      line-height: 0.8;
+      text-shadow: 0 0 100px rgba(59, 130, 246, 0.5), 0 0 200px rgba(37, 99, 235, 0.3);
+      opacity: 0;
+      transform: scale(1.4);
+      transition: opacity 0.35s ease-out, transform 0.35s var(--ease-tactical);
+      position: absolute;
+    }
+
+    #scene-2 .countdown-num.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #scene-2 .countdown-num.exit {
+      opacity: 0;
+      transform: scale(0.75);
+      transition: opacity 0.25s ease-in, transform 0.25s ease-in;
+    }
+
+    #scene-2 .countdown-subtext {
+      position: absolute;
+      bottom: -4.5rem;
+      font-family: var(--font-mono);
+      font-size: clamp(1rem, 1.5vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: var(--orange-bright);
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+   SCENE 3 — SIH LAUNCH REVEAL
+   ============================================================ */
+    #scene-3 .launch-reveal-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    #scene-3 .launch-sih-hero-logo {
+      height: clamp(100px, 15vh, 170px);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.8s var(--ease-tactical), transform 0.8s var(--ease-tactical);
+    }
+
+    #scene-3 .launch-sih-hero-logo.reveal {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #scene-3 .launch-hero-title {
+      font-size: clamp(3.2rem, 7vw, 7rem);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      line-height: 0.92;
+      text-transform: uppercase;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-tactical), transform 0.8s var(--ease-tactical);
+    }
+
+    #scene-3 .launch-hero-title.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-3 .launch-hero-year {
+      font-size: clamp(3.5rem, 8.5vw, 8.5rem);
+      font-weight: 900;
+      color: var(--orange-sih);
+      letter-spacing: 0.06em;
+      line-height: 0.95;
+      text-shadow: 0 0 80px rgba(255, 122, 0, 0.5);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s var(--ease-tactical) 0.2s, transform 0.8s var(--ease-tactical) 0.2s;
+    }
+
+    #scene-3 .launch-hero-year.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-3 .launch-college-sub {
+      font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.8s ease-out 0.4s;
+    }
+
+    #scene-3 .launch-college-sub.reveal {
+      opacity: 1;
+    }
+
+    /* ============================================================
+   SCENE 4 — IS NOW LIVE
+   ============================================================ */
+    #scene-4 .live-announcement-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    #scene-4 .live-pre-headline {
+      font-size: clamp(2.2rem, 5vw, 5rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 0.8s var(--ease-tactical), transform 0.8s var(--ease-tactical);
+    }
+
+    #scene-4 .live-pre-headline.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-4 .live-pre-headline.exit {
+      opacity: 0;
+      transform: translateY(-25px);
+      transition: opacity 0.4s ease-in, transform 0.4s ease-in;
+    }
+
+    #scene-4 .live-event-sub {
+      font-size: clamp(1.2rem, 2vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.6s ease-out 0.2s;
+    }
+
+    #scene-4 .live-event-sub.reveal {
+      opacity: 1;
+    }
+
+    #scene-4 .live-hero-text {
+      font-size: clamp(4rem, 9vw, 9.5rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--orange-bright);
+      text-shadow: 0 0 100px rgba(255, 122, 0, 0.7), 0 6px 35px rgba(0, 0, 0, 0.9);
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.6s var(--ease-tactical), transform 0.6s var(--ease-tactical);
+    }
+
+    #scene-4 .live-hero-text.reveal {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ============================================================
+   SCENE 5 — TERNA REVEAL
+   ============================================================ */
+    #scene-5 .terna-hero-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.8rem;
+    }
+
+    #scene-5 .terna-badge-large {
+      padding: 1rem 2.5rem;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.8s var(--ease-tactical), transform 0.8s var(--ease-tactical);
+    }
+
+    #scene-5 .terna-badge-large.reveal {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #scene-5 .terna-badge-large .logo-img {
+      height: clamp(80px, 14vh, 150px);
+      max-height: 150px;
+    }
+
+    #scene-5 .terna-hero-title {
+      font-size: clamp(2.2rem, 5vw, 5rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.05;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s var(--ease-tactical) 0.3s, transform 0.8s var(--ease-tactical) 0.3s;
+    }
+
+    #scene-5 .terna-hero-title.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-5 .terna-location {
+      font-family: var(--font-mono);
+      font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: var(--blue-cyan);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.8s ease-out 0.5s;
+    }
+
+    #scene-5 .terna-location.reveal {
+      opacity: 1;
+    }
+
+    /* ============================================================
+   SCENE 6 — IIC REVEAL
+   ============================================================ */
+    #scene-6 .iic-hero-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.8rem;
+    }
+
+    #scene-6 .iic-badge-large {
+      padding: 1rem 2.5rem;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.8s var(--ease-tactical), transform 0.8s var(--ease-tactical);
+    }
+
+    #scene-6 .iic-badge-large.reveal {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #scene-6 .iic-badge-large .logo-img {
+      height: clamp(80px, 14vh, 150px);
+      max-height: 150px;
+    }
+
+    #scene-6 .iic-hero-title {
+      font-size: clamp(2.2rem, 5vw, 5rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.05;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s var(--ease-tactical) 0.3s, transform 0.8s var(--ease-tactical) 0.3s;
+    }
+
+    #scene-6 .iic-hero-title.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-6 .iic-ministry-sub {
+      font-size: clamp(1rem, 1.6vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--orange-bright);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.8s ease-out 0.5s;
+    }
+
+    #scene-6 .iic-ministry-sub.reveal {
+      opacity: 1;
+    }
+
+    /* ============================================================
+   SCENE 7 — INTELLECTA REVEAL
+   ============================================================ */
+    #scene-7 .intellecta-dedicated-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      position: relative;
+      width: 100%;
+    }
+
+    #scene-7 .intellecta-managed-label {
+      font-family: var(--font-mono);
+      font-size: clamp(1.2rem, 2vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: var(--blue-cyan);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.8s ease-out;
+    }
+
+    #scene-7 .intellecta-managed-label.reveal {
+      opacity: 1;
+    }
+
+    #scene-7 .intellecta-hero-badge {
+      padding: 0.8rem 2rem;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.8s var(--ease-tactical) 0.3s, transform 0.8s var(--ease-tactical) 0.3s;
+    }
+
+    #scene-7 .intellecta-hero-badge.reveal {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #scene-7 .intellecta-hero-badge .logo-img {
+      width: clamp(300px, 34vw, 550px);
+      height: auto;
+      max-height: none;
+    }
+
+    #scene-7 .intellecta-motto-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.8s ease-out 0.6s;
+    }
+
+    #scene-7 .intellecta-motto-row.reveal {
+      opacity: 1;
+    }
+
+    #scene-7 .intellecta-motto-item {
+      font-family: var(--font-mono);
+      font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+      font-weight: 800;
+      letter-spacing: 0.3em;
+      color: var(--text-white);
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+   SCENE 8 — 8-HOUR OVERVIEW
+   ============================================================ */
+    #scene-8 .telemetry-hero-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding: 3rem 4.5rem;
+      background: rgba(11, 23, 42, 0.85);
+      border: 1.5px solid rgba(59, 130, 246, 0.35);
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+      max-width: 1050px;
+      width: 90%;
+    }
+
+    #scene-8 .telemetry-headline {
+      font-size: clamp(2.5rem, 5.5vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.05;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s var(--ease-tactical), transform 0.7s var(--ease-tactical);
+    }
+
+    #scene-8 .telemetry-headline.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-8 .telemetry-headline .orange {
+      color: var(--orange-sih);
+    }
+
+    #scene-8 .telemetry-window-box {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 1rem 2.5rem;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      font-family: var(--font-mono);
+      font-size: clamp(1.6rem, 3.2vw, 3.2rem);
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: 0.12em;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.7s var(--ease-tactical) 0.3s, transform 0.7s var(--ease-tactical) 0.3s;
+    }
+
+    #scene-8 .telemetry-window-box.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-8 .telemetry-window-box .sep {
+      color: var(--orange-sih);
+    }
+
+    /* ============================================================
+   SCENE 9 — TRACKS
+   ============================================================ */
+    #scene-9 .tracks-split-container {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: clamp(2rem, 4vw, 5rem);
+      width: 100%;
+      max-width: 1300px;
+      margin-top: 1.5rem;
+    }
+
+    #scene-9 .track-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 2.5rem 2rem;
+      background: rgba(11, 23, 42, 0.85);
+      border: 1.5px solid rgba(59, 130, 246, 0.3);
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.7s var(--ease-tactical), transform 0.7s var(--ease-tactical);
+    }
+
+    #scene-9 .track-column.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-9 .track-column-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    #scene-9 .track-column.software .track-column-icon {
+      background: rgba(37, 99, 235, 0.25);
+      border: 1.5px solid var(--blue-bright);
+      color: var(--blue-cyan);
+    }
+
+    #scene-9 .track-column.hardware .track-column-icon {
+      background: rgba(255, 122, 0, 0.25);
+      border: 1.5px solid var(--orange-sih);
+      color: var(--orange-bright);
+    }
+
+    #scene-9 .track-title-text {
+      font-size: clamp(1.6rem, 2.8vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    #scene-9 .track-desc-text {
+      font-size: clamp(0.95rem, 1.4vw, 1.3rem);
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+   SCENE 10 — TIMELINE
+   ============================================================ */
+    #scene-10 .timeline-hero-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
+      width: 100%;
+      max-width: 1300px;
+    }
+
+    #scene-10 .timeline-main-title {
+      font-size: clamp(1.8rem, 3.5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.6s ease-out, transform 0.6s var(--ease-tactical);
+    }
+
+    #scene-10 .timeline-main-title.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-10 .timeline-horizontal-track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      position: relative;
+    }
+
+    #scene-10 .timeline-node-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 0.5s ease-out, transform 0.5s var(--ease-tactical);
+    }
+
+    #scene-10 .timeline-node-item.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-10 .timeline-node-item .time-lbl {
+      font-family: var(--font-mono);
+      font-size: clamp(1rem, 1.6vw, 1.6rem);
+      font-weight: 800;
+      color: var(--text-white);
+    }
+
+    #scene-10 .timeline-node-item .dot-node {
+      width: 24px;
+      height: 24px;
+      background: var(--bg-deep);
+      border: 4px solid var(--blue-bright);
+      border-radius: 50%;
+      box-shadow: 0 0 20px var(--blue-bright);
+    }
+
+    #scene-10 .timeline-node-item.highlight .dot-node {
+      border-color: var(--orange-sih);
+      background: var(--orange-sih);
+      box-shadow: 0 0 35px var(--orange-sih);
+    }
+
+    #scene-10 .timeline-node-item .step-lbl {
+      font-size: clamp(0.85rem, 1.3vw, 1.3rem);
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    #scene-10 .timeline-node-item.highlight .step-lbl {
+      color: var(--orange-bright);
+    }
+
+    #scene-10 .timeline-connecting-line {
+      position: absolute;
+      top: 50%;
+      left: 5%;
+      right: 5%;
+      height: 3px;
+      background: rgba(59, 130, 246, 0.35);
+      z-index: 1;
+    }
+
+    /* ============================================================
+   SCENE 11 — THE CHALLENGE
+   ============================================================ */
+    #scene-11 .challenge-hero-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    #scene-11 .challenge-row {
+      display: flex;
+      gap: clamp(1.5rem, 3.5vw, 4.5rem);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #scene-11 .challenge-word-item {
+      font-size: clamp(3rem, 6.5vw, 6.5rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.5s var(--ease-tactical), transform 0.5s var(--ease-tactical);
+    }
+
+    #scene-11 .challenge-word-item.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-11 .challenge-word-item:nth-child(1) {
+      color: var(--blue-bright);
+    }
+
+    #scene-11 .challenge-word-item:nth-child(2) {
+      color: var(--text-white);
+    }
+
+    #scene-11 .challenge-word-item:nth-child(3) {
+      color: var(--text-muted);
+    }
+
+    #scene-11 .challenge-word-item:nth-child(4) {
+      color: var(--orange-sih);
+    }
+
+    #scene-11 .challenge-quote-line {
+      font-size: clamp(1.1rem, 2vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      line-height: 1.6;
+      opacity: 0;
+      transition: opacity 0.8s ease-out 0.8s;
+    }
+
+    #scene-11 .challenge-quote-line.reveal {
+      opacity: 1;
+    }
+
+    /* ============================================================
+   SCENE 12 — FINAL HERO LOCKUP
+   ============================================================ */
+    #scene-12 .final-lockup-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 1.4rem 2.5rem;
+      background: rgba(11, 23, 42, 0.92);
+      border: 1.5px solid rgba(59, 130, 246, 0.4);
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.85);
+      max-width: 1200px;
+      width: 90%;
+    }
+
+    #scene-12 .final-title-text {
+      font-size: clamp(2rem, 3.8vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.05;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease-out, transform 0.8s var(--ease-tactical);
+    }
+
+    #scene-12 .final-title-text.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene-12 .final-title-text .year {
+      color: var(--orange-sih);
+    }
+
+    #scene-12 .final-college-sub {
+      font-size: clamp(0.9rem, 1.4vw, 1.4rem);
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: var(--text-white);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.7s ease-out 0.3s;
+    }
+
+    #scene-12 .final-college-sub.reveal {
+      opacity: 1;
+    }
+
+    #scene-12 .final-intellecta-badge {
+      padding: 0.35rem 1.2rem;
+      opacity: 0;
+      transition: opacity 0.7s ease-out 0.5s;
+    }
+
+    #scene-12 .final-intellecta-badge.reveal {
+      opacity: 1;
+    }
+
+    #scene-12 .final-intellecta-badge .logo-img {
+      width: clamp(180px, 20vw, 300px);
+      height: auto;
+      max-height: none;
+    }
+
+    #scene-12 .final-logos-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1.5rem, 3.5vw, 4.5rem);
+      opacity: 0;
+      transition: opacity 0.7s ease-out 0.7s;
+      margin: 0.15rem 0;
+    }
+
+    #scene-12 .final-logos-row.reveal {
+      opacity: 1;
+    }
+
+    #scene-12 .final-logos-row .logo-badge-light {
+      padding: 0.3rem 0.9rem;
+    }
+
+    #scene-12 .final-logos-row .logo-img.terna-final {
+      height: clamp(30px, 5vh, 50px);
+      max-height: 50px;
+      width: auto;
+    }
+
+    #scene-12 .final-logos-row .logo-img.iic-final {
+      height: clamp(28px, 4.5vh, 45px);
+      max-height: 45px;
+      width: auto;
+    }
+
+    #scene-12 .final-logos-row .logo-img.sih-final {
+      height: clamp(45px, 7vh, 75px);
+      max-height: 75px;
+      width: auto;
+    }
+
+    #scene-12 .final-slogan-text {
+      font-size: clamp(0.85rem, 1.3vw, 1.3rem);
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.7s ease-out 0.9s;
+    }
+
+    #scene-12 .final-slogan-text.reveal {
+      opacity: 1;
+    }
+
+    #scene-12 .final-slogan-text strong {
+      color: var(--orange-bright);
+    }
+
+    /* Transition Overlay */
+    #transition-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-deep);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease-in-out;
+    }
+
+    #transition-overlay.active {
+      opacity: 1;
+    }
+
+    /* Debug Panel */
+    #debug-panel {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(3, 7, 18, 0.95);
+      color: #00F0FF;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 12px 16px;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      z-index: 9999;
+      display: none;
+      line-height: 1.6;
+      min-width: 240px;
+    }
+
+    #debug-panel.visible {
+      display: block;
+    }
+
+    #debug-panel .debug-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    #debug-panel .debug-btn {
+      background: rgba(0, 240, 255, 0.15);
+      color: #00F0FF;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      padding: 3px 10px;
+      font-family: inherit;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    #debug-panel .debug-btn:hover {
+      background: rgba(0, 240, 255, 0.3);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.1s !important;
+        animation-duration: 0.1s !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="canvas-bg" aria-hidden="true"></canvas>
+
+  <div class="hud-frame-overlay" aria-hidden="true">
+    <div class="hud-corner top-left">SYS // INAUGURATION 2026</div>
+    <div class="hud-corner top-right">TERNA ENGINEERING COLLEGE</div>
+    <div class="hud-corner bottom-left">INTELLECTA OS v2.6</div>
+    <div class="hud-corner bottom-right">INTERNAL HACKATHON</div>
+    <div class="hud-line-top"></div>
+    <div class="hud-line-bottom"></div>
+  </div>
+
+  <div id="transition-overlay" aria-hidden="true"></div>
+
+  <!-- SCENE 0 — PRE-LAUNCH -->
+  <section id="scene-0" class="scene active" aria-label="Pre-launch terminal">
+    <header class="prelaunch-header">
+      <div class="logo-badge-light terna-badge">
+        <img src="assets/logos/terna.png" alt="Terna" class="logo-img" data-asset="terna">
+      </div>
+      <div class="college-title-block">
+        <span class="college-main-name">Terna Engineering College</span>
+        <span class="college-sub-name">Navi Mumbai // MoE Recognized</span>
+      </div>
+      <div class="logo-badge-light iic-badge">
+        <img src="assets/logos/iic.png" alt="IIC" class="logo-img" data-asset="iic">
+      </div>
+    </header>
+    <main class="hero-center-block">
+      <img src="assets/logos/sih.png" alt="SIH" class="logo-img sih-hero-logo" data-asset="sih">
+      <h1 class="sih-hero-title">Smart India<br>Hackathon</h1>
+      <div class="sih-hero-year">2026</div>
+      <div class="internal-strip">INTERNAL HACKATHON</div>
+    </main>
+    <footer class="prelaunch-footer">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.2rem;">
+        <span
+          style="font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.25em; color:var(--text-dim);">MANAGED
+          BY</span>
+        <div class="logo-badge-light intellecta intellecta-footer-badge">
+          <img src="assets/logos/intellecta.png" alt="Intellecta" class="logo-img" data-asset="intellecta">
+        </div>
+      </div>
+      <div class="prompt-enter-box" id="press-enter-hint">[ INITIALIZATION READY // PRESS ENTER TO START ]</div>
+    </footer>
+  </section>
+
+  <!-- SCENE 1 — SYSTEM ACTIVATION -->
+  <section id="scene-1" class="scene" aria-label="System activation">
+    <div class="activation-box">
+      <div class="activation-status-label" id="activation-status-text">SYSTEM INITIALIZING...</div>
+      <div class="activation-target-ring" id="activation-target-ring">
+        <div class="activation-core-dot"></div>
+      </div>
+      <div class="tactical-badge orange">PARAMETERS LOCKED</div>
+    </div>
+  </section>
+
+  <!-- SCENE 2 — COUNTDOWN -->
+  <section id="scene-2" class="scene" aria-label="Tactical countdown">
+    <div class="countdown-wrapper">
+      <div class="countdown-num" id="countdown-3">03</div>
+      <div class="countdown-num" id="countdown-2">02</div>
+      <div class="countdown-num" id="countdown-1">01</div>
+      <div class="countdown-subtext" id="countdown-subtext">CALIBRATING SYSTEM</div>
+    </div>
+  </section>
+
+  <!-- SCENE 3 — SIH LAUNCH -->
+  <section id="scene-3" class="scene" aria-label="Smart India Hackathon 2026 Launch">
+    <div class="launch-reveal-stack">
+      <img src="assets/logos/sih.png" alt="SIH" class="logo-img launch-sih-hero-logo" data-asset="sih">
+      <div class="launch-hero-title">Smart India<br>Hackathon</div>
+      <div class="launch-hero-year">2026</div>
+      <div class="tricolour-beam"></div>
+      <div class="launch-college-sub">TERNA ENGINEERING COLLEGE &nbsp;//&nbsp; NAVI MUMBAI</div>
+    </div>
+  </section>
+
+  <!-- SCENE 4 — IS NOW LIVE -->
+  <section id="scene-4" class="scene" aria-label="The Hackathon is Now Live">
+    <div class="live-announcement-box">
+      <div class="live-pre-headline" id="announce-wait">THE WAIT IS OVER.</div>
+      <div class="live-event-sub" id="announce-event">SMART INDIA HACKATHON 2026 &nbsp;//&nbsp; TERNA ENGINEERING
+        COLLEGE</div>
+      <div class="live-hero-text" id="announce-live">IS NOW LIVE.</div>
+      <div class="tricolour-beam"></div>
+    </div>
+  </section>
+
+  <!-- SCENE 5 — TERNA REVEAL -->
+  <section id="scene-5" class="scene" aria-label="Terna Engineering College">
+    <div class="terna-hero-scene">
+      <div class="tactical-badge">PROUD HOST INSTITUTION</div>
+      <div class="logo-badge-light terna-badge-large" id="terna-badge-large">
+        <img src="assets/logos/terna.png" alt="Terna" class="logo-img" data-asset="terna">
+      </div>
+      <h2 class="terna-hero-title" id="terna-hero-title">Terna Engineering<br>College</h2>
+      <div class="terna-location" id="terna-location">Navi Mumbai &nbsp;//&nbsp; MoE Recognized</div>
+    </div>
+  </section>
+
+  <!-- SCENE 6 — IIC REVEAL -->
+  <section id="scene-6" class="scene" aria-label="Institution's Innovation Council">
+    <div class="iic-hero-scene">
+      <div class="tactical-badge green">NATIONAL INNOVATION ECOSYSTEM</div>
+      <div class="logo-badge-light iic-badge-large" id="iic-badge-large">
+        <img src="assets/logos/iic.png" alt="IIC" class="logo-img" data-asset="iic">
+      </div>
+      <h2 class="iic-hero-title" id="iic-hero-title">Institution's<br>Innovation Council</h2>
+      <div class="iic-ministry-sub" id="iic-ministry-sub">Ministry of Education Initiative</div>
+    </div>
+  </section>
+
+  <!-- SCENE 7 — INTELLECTA REVEAL -->
+  <section id="scene-7" class="scene" aria-label="Managed by Intellecta">
+    <div class="intellecta-dedicated-scene">
+      <div class="intellecta-managed-label" id="intellecta-managed-lbl">// MANAGED BY</div>
+      <div class="logo-badge-light intellecta intellecta-hero-badge" id="intellecta-hero-badge">
+        <img src="assets/logos/intellecta.png" alt="Intellecta" class="logo-img" data-asset="intellecta">
+      </div>
+      <div class="intellecta-motto-row" id="intellecta-motto-row">
+        <span class="intellecta-motto-item">IDEATE</span>
+        <span style="color:var(--orange-sih);">•</span>
+        <span class="intellecta-motto-item">PROTOTYPE</span>
+        <span style="color:var(--orange-sih);">•</span>
+        <span class="intellecta-motto-item">DOMINATE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 8 — 8-HOUR OVERVIEW -->
+  <section id="scene-8" class="scene" aria-label="Event Details">
+    <div class="telemetry-hero-card">
+      <div class="tactical-badge orange">OFFLINE EVENT TELEMETRY</div>
+      <div class="telemetry-headline" id="telemetry-headline"><span class="orange">8-HOUR</span> OFFLINE<br>HACKATHON
+      </div>
+      <div class="telemetry-window-box" id="telemetry-window-box">
+        <span>09:00 AM <span class="sep">—</span> 05:00 PM</span>
+      </div>
+      <div class="tactical-badge green">DATE: 3RD SEPTEMBER 2026</div>
+    </div>
+  </section>
+
+  <!-- SCENE 9 — TRACKS -->
+  <section id="scene-9" class="scene" aria-label="Hackathon Tracks">
+    <div class="tactical-badge">TWO COMPETITIVE TRACKS</div>
+    <div class="tracks-split-container">
+      <div class="track-column software" id="track-column-software">
+        <div class="track-column-icon">&lt;/&gt;</div>
+        <div class="track-title-text" style="color: var(--blue-bright);">SOFTWARE<br>EDITION</div>
+        <div class="track-desc-text">Develop your complete software prototype and model within the 8-hour hackathon
+          window.</div>
+      </div>
+      <div class="track-column hardware" id="track-column-hardware">
+        <div class="track-column-icon">⚙</div>
+        <div class="track-title-text" style="color: var(--orange-bright);">HARDWARE<br>EDITION</div>
+        <div class="track-desc-text">Construct and demonstrate your physical hardware working model within the 8-hour
+          window.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 10 — TIMELINE -->
+  <section id="scene-10" class="scene" aria-label="Today's Timeline">
+    <div class="timeline-hero-wrapper">
+      <div class="timeline-main-title" id="timeline-main-title">TODAY'S MISSION TIMELINE</div>
+      <div class="timeline-horizontal-track">
+        <div class="timeline-connecting-line"></div>
+        <div class="timeline-node-item" data-delay="0"><span class="time-lbl">09:00 AM</span><span
+            class="dot-node"></span><span class="step-lbl">START</span></div>
+        <div class="timeline-node-item" data-delay="200"><span class="time-lbl">HACKATHON</span><span
+            class="dot-node"></span><span class="step-lbl">IN PROGRESS</span></div>
+        <div class="timeline-node-item highlight" data-delay="400"><span class="time-lbl">01:00 PM</span><span
+            class="dot-node"></span><span class="step-lbl">JUDGING SESSION</span></div>
+        <div class="timeline-node-item" data-delay="600"><span class="time-lbl">05:00 PM</span><span
+            class="dot-node"></span><span class="step-lbl">FINISH</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 11 — THE CHALLENGE -->
+  <section id="scene-11" class="scene" aria-label="The Challenge">
+    <div class="challenge-hero-stack">
+      <div class="challenge-row">
+        <span class="challenge-word-item" data-delay="0">IDEATE</span>
+        <span class="challenge-word-item" data-delay="200">BUILD</span>
+        <span class="challenge-word-item" data-delay="400">PRESENT</span>
+        <span class="challenge-word-item" data-delay="600">WIN</span>
+      </div>
+      <div class="tricolour-beam"></div>
+      <div class="challenge-quote-line" id="challenge-quote-line">Ideas Today. Solutions Tomorrow.<br>Better India
+        Forever.</div>
+    </div>
+  </section>
+
+  <!-- SCENE 12 — FINAL LOCKUP -->
+  <section id="scene-12" class="scene" aria-label="Final closing lockup">
+    <div class="final-lockup-card">
+      <div class="final-title-text" id="final-title-text">Smart India Hackathon<br><span class="year">2026</span></div>
+      <div class="final-college-sub" id="final-college-sub">Terna Engineering College &nbsp;//&nbsp; Navi Mumbai</div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.15rem;">
+        <span
+          style="font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.25em; color:var(--blue-cyan);">MANAGED
+          BY</span>
+        <div class="logo-badge-light intellecta final-intellecta-badge" id="final-intellecta-badge">
+          <img src="assets/logos/intellecta.png" alt="Intellecta" class="logo-img" data-asset="intellecta">
+        </div>
+      </div>
+      <div class="final-logos-row" id="final-logos-row">
+        <div class="logo-badge-light"><img src="assets/logos/terna.png" alt="Terna" class="logo-img terna-final"
+            data-asset="terna"></div>
+        <div class="logo-badge-light"><img src="assets/logos/iic.png" alt="IIC" class="logo-img iic-final"
+            data-asset="iic"></div>
+        <img src="assets/logos/sih.png" alt="SIH" class="logo-img sih-final" data-asset="sih">
+      </div>
+      <div class="final-slogan-text" id="final-slogan-text">BUILDING <strong>SOLUTIONS</strong>. BUILDING A
+        <strong>BETTER INDIA</strong>.
+      </div>
+    </div>
+  </section>
+
+  <!-- Debug Panel -->
+  <div id="debug-panel" aria-hidden="true">
+    <div id="debug-info">Scene: 0 / PRE-LAUNCH<br>Audio: OFF<br>Fullscreen: NO<br>Timeline: WAITING FOR ENTER</div>
+    <div class="debug-controls">
+      <button class="debug-btn" onclick="SIH.previousScene()">← PREV</button>
+      <button class="debug-btn" onclick="SIH.nextScene()">NEXT →</button>
+      <button class="debug-btn" onclick="SIH.restart()">RESTART</button>
+    </div>
+  </div>
+
+  <!-- BGM Audio Element -->
+  <audio id="bgm-audio" src="assets/bgm.mp3" preload="auto" loop></audio>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var MASTER_TIMELINE = [
+        { id: 0, name: 'PRE-LAUNCH TERMINAL', duration: 0 },
+        { id: 1, name: 'SYSTEM ACTIVATION', duration: 3000 },
+        { id: 2, name: 'TACTICAL COUNTDOWN', duration: 4200 },
+        { id: 3, name: 'SIH LAUNCH REVEAL', duration: 4500 },
+        { id: 4, name: 'IS NOW LIVE', duration: 7000 },
+        { id: 5, name: 'TERNA INSTITUTIONAL REVEAL', duration: 4000 },
+        { id: 6, name: 'IIC INNOVATION REVEAL', duration: 4000 },
+        { id: 7, name: 'INTELLECTA HERO REVEAL', duration: 5000 },
+        { id: 8, name: '8-HOUR HACKATHON OVERVIEW', duration: 4500 },
+        { id: 9, name: 'SOFTWARE VS HARDWARE TRACKS', duration: 5000 },
+        { id: 10, name: 'MISSION TIMELINE', duration: 5500 },
+        { id: 11, name: 'THE CHALLENGE', duration: 5500 },
+        { id: 12, name: 'FINAL HERO LOCKUP', duration: 0 }
+      ];
+
+      var TOTAL_SCENES = MASTER_TIMELINE.length;
+
+      var state = {
+        currentScene: 0, launched: false, audioMuted: false,
+        debugMode: false, transitioning: false,
+        sceneTimers: [], masterTimer: null, bgmPlaying: false
+      };
+
+      function safe(fn) { try { fn(); } catch (e) { console.warn('[SIH]', e.message); } }
+      function $(sel) { return document.querySelector(sel); }
+      function $$(sel) { return document.querySelectorAll(sel); }
+
+      function clearSceneTimers() {
+        state.sceneTimers.forEach(function (t) { clearTimeout(t); });
+        state.sceneTimers = [];
+        if (state.masterTimer) { clearTimeout(state.masterTimer); state.masterTimer = null; }
+      }
+
+      function sceneTimer(fn, delay) {
+        var t = setTimeout(fn, delay);
+        state.sceneTimers.push(t);
+        return t;
+      }
+
+      // --- BGM Audio ---
+      function playBGM() {
+        try {
+          var audio = document.getElementById('bgm-audio');
+          if (!audio) return;
+          audio.volume = 0.5;
+          audio.currentTime = 0;
+          var p = audio.play();
+          if (p && p.catch) p.catch(function () { });
+          state.bgmPlaying = true;
+        } catch (e) { }
+      }
+
+      function toggleMuteBGM() {
+        var audio = document.getElementById('bgm-audio');
+        if (!audio) return;
+        state.audioMuted = !state.audioMuted;
+        audio.muted = state.audioMuted;
+        updateDebug();
+      }
+
+      // --- Canvas ---
+      var canvas, ctx, particles = [];
+      function initCanvas() {
+        try {
+          canvas = document.getElementById('canvas-bg');
+          if (!canvas || !canvas.getContext) return;
+          ctx = canvas.getContext('2d');
+          resizeCanvas();
+          createParticles();
+          animateCanvas();
+          window.addEventListener('resize', resizeCanvas);
+        } catch (e) { }
+      }
+      function resizeCanvas() {
+        if (!canvas) return;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      function createParticles() {
+        particles = [];
+        var count = Math.min(60, Math.floor(window.innerWidth / 25));
+        for (var i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+            vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+            r: Math.random() * 1.6 + 0.4, alpha: Math.random() * 0.2 + 0.04
+          });
+        }
+      }
+      function animateCanvas() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        ctx.strokeStyle = 'rgba(59,130,246,0.04)';
+        ctx.lineWidth = 1;
+        var step = 90;
+        for (var x = 0; x < window.innerWidth; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, window.innerHeight); ctx.stroke(); }
+        for (var y = 0; y < window.innerHeight; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(window.innerWidth, y); ctx.stroke(); }
+        particles.forEach(function (p) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = window.innerWidth; if (p.x > window.innerWidth) p.x = 0;
+          if (p.y < 0) p.y = window.innerHeight; if (p.y > window.innerHeight) p.y = 0;
+          ctx.fillStyle = 'rgba(59,130,246,' + p.alpha + ')';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        });
+        requestAnimationFrame(animateCanvas);
+      }
+      function boostCanvasEnergy() {
+        particles.forEach(function (p) { p.vx *= 3; p.vy *= 3; p.alpha = Math.min(p.alpha * 3, 0.45); });
+        sceneTimer(function () {
+          particles.forEach(function (p) { p.vx /= 3; p.vy /= 3; p.alpha = Math.max(p.alpha / 3, 0.04); });
+        }, 2000);
+      }
+
+      // --- Scene Management ---
+      function showScene(index) {
+        if (index < 0 || index >= TOTAL_SCENES || state.transitioning) return;
+        state.transitioning = true;
+        clearSceneTimers();
+
+        var overlay = $('#transition-overlay');
+        var currentEl = $('#scene-' + state.currentScene);
+        var nextEl = $('#scene-' + index);
+
+        overlay.classList.add('active');
+        sceneTimer(function () {
+          exitScene(state.currentScene);
+          currentEl.classList.remove('active');
+          state.currentScene = index;
+          nextEl.classList.add('active');
+
+          sceneTimer(function () {
+            overlay.classList.remove('active');
+            enterScene(index);
+            sceneTimer(function () { state.transitioning = false; }, 300);
+
+            if (state.launched) {
+              var cfg = MASTER_TIMELINE[index];
+              if (cfg && cfg.duration > 0) {
+                state.masterTimer = setTimeout(function () {
+                  if (state.launched && state.currentScene === index) showScene(index + 1);
+                }, cfg.duration);
+              }
+            }
+          }, 80);
+        }, 250);
+        updateDebug();
+      }
+
+      function nextScene() { if (state.currentScene < TOTAL_SCENES - 1) showScene(state.currentScene + 1); }
+      function previousScene() { if (state.currentScene > 0) showScene(state.currentScene - 1); }
+
+      function exitScene(index) {
+        if (index === 2) $$('#scene-2 .countdown-num').forEach(function (el) { el.classList.remove('visible', 'exit'); });
+      }
+
+      function enterScene(index) {
+        updateDebug();
+        switch (index) {
+          case 0: state.launched = false; break;
+          case 1: enterScene1(); break;
+          case 2: enterScene2(); break;
+          case 3: enterScene3(); break;
+          case 4: enterScene4(); break;
+          case 5: enterScene5(); break;
+          case 6: enterScene6(); break;
+          case 7: enterScene7(); break;
+          case 8: enterScene8(); break;
+          case 9: enterScene9(); break;
+          case 10: enterScene10(); break;
+          case 11: enterScene11(); break;
+          case 12: enterScene12(); break;
+        }
+      }
+
+      function enterScene1() {
+        safe(boostCanvasEnergy);
+        var s = $('#activation-status-text'), r = $('#activation-target-ring');
+        if (s) s.innerText = 'SYSTEM INITIALIZING...';
+        sceneTimer(function () { if (r) r.classList.add('active'); }, 300);
+        sceneTimer(function () { if (s) s.innerText = 'PARAMETERS LOCKED.'; }, 1200);
+      }
+      function enterScene2() {
+        var nums = [
+          { el: '#countdown-3', sub: 'CALIBRATING SYSTEM', val: 3, delay: 200 },
+          { el: '#countdown-2', sub: 'ENERGY LOCKED', val: 2, delay: 1400 },
+          { el: '#countdown-1', sub: 'LAUNCH IMMINENT', val: 1, delay: 2600 }
+        ];
+        var sublabel = $('#countdown-subtext');
+        nums.forEach(function (item) {
+          sceneTimer(function () {
+            var el = $(item.el); if (!el) return;
+            el.classList.remove('exit'); el.classList.add('visible');
+            if (sublabel) sublabel.innerText = item.sub;
+            sceneTimer(function () { el.classList.remove('visible'); el.classList.add('exit'); }, item.val === 1 ? 1000 : 900);
+          }, item.delay);
+        });
+      }
+      function enterScene3() {
+        safe(boostCanvasEnergy);
+        sceneTimer(function () { safe(function () { $('#scene-3 .launch-sih-hero-logo').classList.add('reveal'); }); }, 200);
+        sceneTimer(function () { safe(function () { $('#scene-3 .launch-hero-title').classList.add('reveal'); }); }, 500);
+        sceneTimer(function () { safe(function () { $('#scene-3 .launch-hero-year').classList.add('reveal'); }); }, 800);
+        sceneTimer(function () { safe(function () { $('#scene-3 .launch-college-sub').classList.add('reveal'); }); }, 1100);
+      }
+      function enterScene4() {
+        sceneTimer(function () { safe(function () { $('#announce-wait').classList.add('reveal'); }); }, 200);
+        sceneTimer(function () { safe(function () { $('#announce-wait').classList.add('exit'); }); }, 2200);
+        sceneTimer(function () { safe(function () { $('#announce-event').classList.add('reveal'); }); }, 2700);
+        sceneTimer(function () { safe(function () { $('#announce-live').classList.add('reveal'); }); }, 3200);
+      }
+      function enterScene5() {
+        sceneTimer(function () { safe(function () { $('#terna-badge-large').classList.add('reveal'); }); }, 200);
+        sceneTimer(function () { safe(function () { $('#terna-hero-title').classList.add('reveal'); }); }, 500);
+        sceneTimer(function () { safe(function () { $('#terna-location').classList.add('reveal'); }); }, 800);
+      }
+      function enterScene6() {
+        sceneTimer(function () { safe(function () { $('#iic-badge-large').classList.add('reveal'); }); }, 200);
+        sceneTimer(function () { safe(function () { $('#iic-hero-title').classList.add('reveal'); }); }, 500);
+        sceneTimer(function () { safe(function () { $('#iic-ministry-sub').classList.add('reveal'); }); }, 800);
+      }
+      function enterScene7() {
+        sceneTimer(function () { safe(function () { $('#intellecta-managed-lbl').classList.add('reveal'); }); }, 200);
+        sceneTimer(function () { safe(function () { $('#intellecta-hero-badge').classList.add('reveal'); }); }, 500);
+        sceneTimer(function () { safe(function () { $('#intellecta-motto-row').classList.add('reveal'); }); }, 800);
+      }
+      function enterScene8() {
+        sceneTimer(function () { safe(function () { $('#telemetry-headline').classList.add('reveal'); }); }, 200);
+        sceneTimer(function () { safe(function () { $('#telemetry-window-box').classList.add('reveal'); }); }, 500);
+      }
+      function enterScene9() {
+        sceneTimer(function () { safe(function () { $('#track-column-software').classList.add('reveal'); }); }, 300);
+        sceneTimer(function () { safe(function () { $('#track-column-hardware').classList.add('reveal'); }); }, 600);
+      }
+      function enterScene10() {
+        sceneTimer(function () { safe(function () { $('#timeline-main-title').classList.add('reveal'); }); }, 200);
+        $$('#scene-10 .timeline-node-item').forEach(function (item) {
+          var d = parseInt(item.getAttribute('data-delay') || '0');
+          sceneTimer(function () { item.classList.add('reveal'); }, d + 400);
+        });
+      }
+      function enterScene11() {
+        $$('#scene-11 .challenge-word-item').forEach(function (item) {
+          var d = parseInt(item.getAttribute('data-delay') || '0');
+          sceneTimer(function () { item.classList.add('reveal'); }, d + 200);
+        });
+        sceneTimer(function () { safe(function () { $('#challenge-quote-line').classList.add('reveal'); }); }, 1000);
+      }
+      function enterScene12() {
+        sceneTimer(function () { safe(function () { $('#final-title-text').classList.add('reveal'); }); }, 300);
+        sceneTimer(function () { safe(function () { $('#final-college-sub').classList.add('reveal'); }); }, 600);
+        sceneTimer(function () { safe(function () { $('#final-intellecta-badge').classList.add('reveal'); }); }, 800);
+        sceneTimer(function () { safe(function () { $('#final-logos-row').classList.add('reveal'); }); }, 1000);
+        sceneTimer(function () { safe(function () { $('#final-slogan-text').classList.add('reveal'); }); }, 1200);
+      }
+
+      function restart() {
+        clearSceneTimers();
+        state.transitioning = false;
+        state.launched = false;
+        $$('.reveal, .visible, .exit, .active').forEach(function (el) { el.classList.remove('reveal', 'visible', 'exit', 'active'); });
+        state.currentScene = 0;
+        $('#scene-0').classList.add('active');
+        var audio = document.getElementById('bgm-audio');
+        if (audio) { audio.pause(); audio.currentTime = 0; }
+        state.bgmPlaying = false;
+        updateDebug();
+      }
+
+      function handleKeydown(e) {
+        if (['Space', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Enter'].indexOf(e.code) !== -1) e.preventDefault();
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyD') {
+          state.debugMode = !state.debugMode;
+          $('#debug-panel').classList.toggle('visible', state.debugMode);
+          updateDebug();
+          return;
+        }
+        switch (e.code) {
+          case 'Enter': if (!state.launched) launchExperience(); break;
+          case 'KeyF': toggleFullscreen(); break;
+          case 'KeyM': toggleMuteBGM(); break;
+          case 'KeyR': case 'KeyP': restart(); break;
+          case 'Space': case 'ArrowRight': nextScene(); break;
+          case 'ArrowLeft': previousScene(); break;
+        }
+      }
+
+      function launchExperience() {
+        state.launched = true;
+        safe(playBGM);
+        safe(toggleFullscreen);
+        showScene(1);
+      }
+
+      function toggleFullscreen() {
+        try {
+          if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        } catch (e) { }
+        updateDebug();
+      }
+
+      function updateDebug() {
+        if (!state.debugMode) return;
+        var info = $('#debug-info');
+        if (info) {
+          info.innerHTML =
+            'Scene: ' + state.currentScene + ' / ' + MASTER_TIMELINE[state.currentScene].name + '<br>' +
+            'BGM: ' + (state.bgmPlaying ? (state.audioMuted ? 'MUTED' : 'PLAYING') : 'OFF') + '<br>' +
+            'Timeline: ' + (state.launched ? 'RUNNING (AUTO)' : 'WAITING FOR ENTER');
+        }
+      }
+
+      function preloadAssets() {
+        $$('img.logo-img').forEach(function (img) {
+          img.addEventListener('error', function () { img.setAttribute('data-failed', 'true'); img.style.display = 'none'; });
+        });
+      }
+
+      function initWebhooks() {
+        try {
+          var topic = 'sih2026_terna_inauguration_trigger_x99';
+          if (window.EventSource) {
+            var es = new EventSource('https://ntfy.sh/' + topic + '/sse');
+            es.onmessage = function (e) {
+              try {
+                var data = JSON.parse(e.data);
+                var msg = (data.message || '').trim().toLowerCase();
+                if (msg === 'launch' || msg === 'enter' || msg === 'start') {
+                  if (!state.launched) launchExperience();
+                } else if (msg === 'next') {
+                  nextScene();
+                } else if (msg === 'prev') {
+                  previousScene();
+                } else if (msg === 'restart') {
+                  restart();
+                }
+              } catch (err) { }
+            };
+          }
+        } catch (e) { }
+      }
+
+      function init() {
+        preloadAssets();
+        initCanvas();
+        initWebhooks();
+        document.addEventListener('keydown', handleKeydown);
+        window.SIH = { nextScene: nextScene, previousScene: previousScene, restart: restart };
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
+    })();
+  </script>
+</body>
+
+</html>
