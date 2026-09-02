@@ -1565,10 +1565,49 @@
           var audio = document.getElementById('bgm-audio');
           if (!audio) return;
           audio.volume = 0.5;
-          audio.currentTime = 0;
           var p = audio.play();
-          if (p && p.catch) p.catch(function () { });
+          if (p && p.catch) {
+            p.catch(function (err) {
+              console.warn('[SIH Audio Autoplay Policy]', err);
+              state.audioBlocked = true;
+              var unlock = function () {
+                audio.play().then(function () {
+                  state.audioBlocked = false;
+                  state.bgmPlaying = true;
+                  updateDebug();
+                }).catch(function () { });
+                document.removeEventListener('click', unlock);
+                document.removeEventListener('keydown', unlock);
+                document.removeEventListener('touchstart', unlock);
+                document.removeEventListener('pointerdown', unlock);
+              };
+              document.addEventListener('click', unlock);
+              document.addEventListener('keydown', unlock);
+              document.addEventListener('touchstart', unlock);
+              document.addEventListener('pointerdown', unlock);
+            });
+          }
           state.bgmPlaying = true;
+        } catch (e) { }
+      }
+
+      function preUnlockAudio() {
+        try {
+          var audio = document.getElementById('bgm-audio');
+          if (audio) {
+            audio.volume = 0.5;
+            var p = audio.play();
+            if (p && p.then) {
+              p.then(function () {
+                if (!state.launched) {
+                  audio.pause();
+                  audio.currentTime = 0;
+                } else {
+                  state.bgmPlaying = true;
+                }
+              }).catch(function () { });
+            }
+          }
         } catch (e) { }
       }
 
@@ -1869,6 +1908,10 @@
         preloadAssets();
         initCanvas();
         initWebhooks();
+        document.addEventListener('click', preUnlockAudio);
+        document.addEventListener('keydown', preUnlockAudio);
+        document.addEventListener('touchstart', preUnlockAudio);
+        document.addEventListener('pointerdown', preUnlockAudio);
         document.addEventListener('keydown', handleKeydown);
         window.SIH = { nextScene: nextScene, previousScene: previousScene, restart: restart };
       }
